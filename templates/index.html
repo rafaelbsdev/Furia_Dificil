@@ -13,7 +13,6 @@
         <button id="theme-toggle">🌙</button>
     </div>
 
-    <!-- Sistema de Abas -->
     <div class="tab-system">
         <div class="tab-header">
             <button class="tab-link active" onclick="openTab(event, 'cadastro')">Cadastro</button>
@@ -101,6 +100,30 @@
         </div>
     </div>
 
+    <!-- Modal de Detalhes -->
+    <div id="detail-modal" class="modal">
+        <div class="modal-content furia-modal">
+            <span class="modal-close">&times;</span>
+            <div class="modal-header">
+                <h2 id="modal-nome"></h2>
+                <p class="modal-subtitle">Interesses relacionados</p>
+            </div>
+            <div class="modal-body">
+                <div class="perfil-info">
+                    <img id="modal-foto" class="foto-perfil-modal" src="/static/img/Furia_Logo.jpg" alt="Foto do perfil">
+                    <div class="detalhes-contato">
+                        <p><span>📧 E-mail:</span> <span id="modal-email"></span></p>
+                        <p><span>📱 Telefone:</span> <span id="modal-telefone"></span></p>
+                        <p><span>🆔 CPF:</span> <span id="modal-cpf"></span></p>
+                    </div>
+                </div>
+                <div id="conteudo-relacionado" class="content-grid">
+                    <!-- Conteúdo dinâmico será injetado aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Controle de Tema
         document.addEventListener('DOMContentLoaded', () => {
@@ -138,8 +161,8 @@
         document.getElementById('telefone').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             value = value.substring(0, 11);
-            value = value.replace(/^(\d{2})(\d)/g, '($1) $2')
-                         .replace(/(\d)(\d{4})$/, '$1 $2-');
+            value = value.replace(/^(\d{2})(\d)/g, '($1) $2 ')
+                         .replace(/(\d)(\d{4})$/, '$1-$2');
             e.target.value = value;
         });
 
@@ -194,7 +217,8 @@
                 cpf: document.getElementById('cpf').value,
                 telefone: document.getElementById('telefone').value,
                 foto: document.getElementById('foto').files[0] ? 
-                    URL.createObjectURL(document.getElementById('foto').files[0]) : '',
+                    URL.createObjectURL(document.getElementById('foto').files[0]) : 
+                    document.getElementById('default-image').content,
                 interesses: interesses,
                 dataCadastro: new Date().toLocaleString()
             };
@@ -228,7 +252,14 @@
             });
 
             resultados.innerHTML = filtrados.map(cadastro => `
-                <div class="result-item" data-id="${cadastro.id}">
+                <div class="result-item" 
+                     data-id="${cadastro.id}"
+                     data-interesses='${JSON.stringify(cadastro.interesses)}'
+                     data-nome="${cadastro.nome}"
+                     data-email="${cadastro.email}"
+                     data-telefone="${cadastro.telefone}"
+                     data-cpf="${cadastro.cpf}"
+                     data-foto="${cadastro.foto}">
                     <img src="${cadastro.foto || defaultImage}" 
                          class="foto-perfil" 
                          alt="Foto do perfil">
@@ -254,6 +285,61 @@
                     }
                 });
             });
+
+            // Evento de clique nos resultados
+            document.querySelectorAll('.result-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    openModal({
+                        id: this.dataset.id,
+                        nome: this.dataset.nome,
+                        email: this.dataset.email,
+                        telefone: this.dataset.telefone,
+                        cpf: this.dataset.cpf,
+                        foto: this.dataset.foto || defaultImage,
+                        interesses: JSON.parse(this.dataset.interesses)
+                    });
+                });
+            });
+        }
+
+        // Modal
+        function openModal(dados) {
+            const modal = document.getElementById('detail-modal');
+            document.getElementById('modal-nome').textContent = dados.nome;
+            document.getElementById('modal-email').textContent = dados.email;
+            document.getElementById('modal-telefone').textContent = dados.telefone;
+            document.getElementById('modal-cpf').textContent = dados.cpf;
+            document.getElementById('modal-foto').src = dados.foto;
+            
+            const contentGrid = document.getElementById('conteudo-relacionado');
+            contentGrid.innerHTML = '<div class="loading">Carregando conteúdo relacionado...</div>';
+            
+            modal.style.display = 'block';
+            
+            setTimeout(() => {
+                loadRelatedContent(dados.interesses, contentGrid);
+            }, 500);
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').style.display = 'none';
+        }
+
+        document.querySelector('.modal-close').addEventListener('click', closeModal);
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('detail-modal')) {
+                closeModal();
+            }
+        }
+
+        function loadRelatedContent(interesses, container) {
+            container.innerHTML = `
+                <div class="content-card">
+                    <h4>🚧 Em desenvolvimento</h4>
+                    <p>A integração com as fontes de conteúdo está sendo implementada.</p>
+                    <p>Interesses detectados: ${interesses.join(', ')}</p>
+                </div>
+            `;
         }
 
         // Eventos de Consulta
