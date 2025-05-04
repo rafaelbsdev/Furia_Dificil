@@ -1,13 +1,7 @@
-from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit
-import uuid
-import requests
-from datetime import datetime
-from bs4 import BeautifulSoup
+from flask import Flask, render_template
+from flask_socketio import SocketIO
 import os
 from dotenv import load_dotenv
-import time
-from collections import OrderedDict
 
 load_dotenv()
 

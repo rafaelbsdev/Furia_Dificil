@@ -13,60 +13,40 @@
     </div>
     
     <div class="chat-container">
-
+        <!-- Container originalmente vazio (sem message-box ou input-area) -->
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-<script>
-    const socket = io();
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
-    const messageBox = document.getElementById('message-box');
-    const themeToggle = document.getElementById('theme-toggle');
-    let inBotConversation = false;
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
 
-    // Controle do Widget WhatsApp
-    function toggleWhatsApp() {
-        const modal = document.getElementById('whatsappModal');
-        if (modal.style.display === 'block') {
-            modal.style.display = 'none';
-        } else {
-            modal.style.display = 'block';
+        // Controle do Tema
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.className = `${savedTheme}-theme`;
+            themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
         }
-    }
 
-    // Fecha o modal ao clicar fora
-    window.onclick = function(event) {
-        const modal = document.getElementById('whatsappModal');
-        if (event.target === modal) {
-            modal.style.display = 'none';
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-theme');
+            const newTheme = isDark ? 'light' : 'dark';
+            document.body.className = `${newTheme}-theme`;
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+        });
+
+        // Widget WhatsApp (original)
+        function toggleWhatsApp() {
+            const modal = document.getElementById('whatsappModal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
         }
-    }
 
-    // Toggle de Tema (Corrigido)
-    function initializeTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.body.className = `${savedTheme}-theme`;
-        themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-    }
+        document.addEventListener('DOMContentLoaded', initializeTheme);
+    </script>
 
-    themeToggle.addEventListener('click', () => {
-        const isDark = document.body.classList.contains('dark-theme');
-        const newTheme = isDark ? 'light' : 'dark';
-        
-        document.body.classList.remove(`${isDark ? 'dark' : 'light'}-theme`);
-        document.body.classList.add(`${newTheme}-theme`);
-        localStorage.setItem('theme', newTheme);
-        themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-    });
-
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', initializeTheme);
-</script>
-    <!-- Widget do WhatsApp -->
+    <!-- Widget do WhatsApp (mantido conforme original) -->
     <div class="whatsapp-widget">
         <button class="whatsapp-button" onclick="toggleWhatsApp()">💬</button>
-        
         <div class="whatsapp-modal" id="whatsappModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -76,9 +56,9 @@
                 <div class="modal-body">
                     <p>Você será redirecionado para o WhatsApp. Deseja continuar?</p>
                     <a href="https://wa.me/5511993404466" target="_blank" class="whatsapp-link">Abrir WhatsApp</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
