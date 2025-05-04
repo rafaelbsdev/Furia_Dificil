@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FURIA Chat</title>
+    <title>FURIA Cadastro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
     <meta id="default-image" content="{{ url_for('static', filename='img/Furia_Logo.jpg') }}">
@@ -83,23 +83,6 @@
         </div>
     </div>
 
-    <!-- Widget WhatsApp -->
-    <div class="whatsapp-widget">
-        <button class="whatsapp-button" onclick="toggleWhatsApp()">💬</button>
-        <div class="whatsapp-modal" id="whatsappModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Chat FURIA</h3>
-                    <button class="close-button" onclick="toggleWhatsApp()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Você será redirecionado para o WhatsApp. Deseja continuar?</p>
-                    <a href="https://wa.me/5511993404466" target="_blank" class="whatsapp-link">Abrir WhatsApp</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal de Detalhes -->
     <div id="detail-modal" class="modal">
         <div class="modal-content furia-modal">
@@ -117,9 +100,7 @@
                         <p><span>🆔 CPF:</span> <span id="modal-cpf"></span></p>
                     </div>
                 </div>
-                <div id="conteudo-relacionado" class="content-grid">
-                    <!-- Conteúdo dinâmico será injetado aqui -->
-                </div>
+                <div id="conteudo-relacionado" class="content-grid"></div>
             </div>
         </div>
     </div>
@@ -161,8 +142,8 @@
         document.getElementById('telefone').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             value = value.substring(0, 11);
-            value = value.replace(/^(\d{2})(\d)/g, '($1) $2 ')
-                         .replace(/(\d)(\d{4})$/, '$1-$2');
+            value = value.replace(/^(\d{2})(\d)/g, '($1) $2')
+                         .replace(/(\d)(\d{4})$/, '$1 $2-');
             e.target.value = value;
         });
 
@@ -275,13 +256,15 @@
                 </div>
             `).join('') || '<div class="no-results">Nenhum cadastro encontrado</div>';
 
+            // Evento de exclusão
             document.querySelectorAll('.btn-excluir').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function(event) {
+                    event.stopPropagation();
                     const id = parseInt(this.closest('.result-item').dataset.id);
                     if (confirm('Excluir permanentemente?')) {
                         const novosCadastros = cadastros.filter(c => c.id !== id);
                         localStorage.setItem('cadastros', JSON.stringify(novosCadastros));
-                        carregarCadastros(termo);
+                        carregarCadastros(document.getElementById('busca-interesses').value);
                     }
                 });
             });
@@ -303,7 +286,7 @@
         }
 
         // Modal
-        function openModal(dados) {
+        async function openModal(dados) {
             const modal = document.getElementById('detail-modal');
             document.getElementById('modal-nome').textContent = dados.nome;
             document.getElementById('modal-email').textContent = dados.email;
@@ -316,15 +299,95 @@
             
             modal.style.display = 'block';
             
-            setTimeout(() => {
-                loadRelatedContent(dados.interesses, contentGrid);
-            }, 500);
+            try {
+                const response = await fetch('/static/data/content.json');
+                const data = await response.json();
+                
+                let redesSociais = [...data.geral.redes_sociais];
+                let conteudoEspecifico = [];
+                const produtos = shuffleArray(data.geral.produtos).slice(0, 4);
+
+                dados.interesses.forEach(interesse => {
+                    const interesseFormatado = interesse.replace(/\s+/g, ' ');
+                    if (data[interesseFormatado]) {
+                        redesSociais = [...redesSociais, ...(data[interesseFormatado].redes_sociais || [])];
+                        conteudoEspecifico = [...conteudoEspecifico, ...(data[interesseFormatado].conteudo || [])];
+                    }
+                });
+
+                // Remove duplicatas
+                redesSociais = redesSociais.filter((v, i, a) => a.findIndex(t => t.url === v.url) === i);
+                conteudoEspecifico = conteudoEspecifico.filter((v, i, a) => a.findIndex(t => t.url === v.url) === i);
+
+                // Gerar HTML
+                contentGrid.innerHTML = `
+                    ${gerarSecaoProdutos(produtos, dados.foto)}
+                    ${gerarSecaoRedes([...redesSociais, ...conteudoEspecifico])}
+                `;
+
+            } catch (error) {
+                console.error('Erro:', error);
+                contentGrid.innerHTML = '<div class="error">Erro ao carregar conteúdo</div>';
+            }
+        }
+
+        function gerarSecaoProdutos(produtos, defaultImage) {
+            return `
+                <div class="content-section">
+                    <h3 class="section-title">🎁 Produtos Relacionados</h3>
+                    <div class="produtos-grid">
+                        ${produtos.map(produto => `
+                            <div class="produto-card">
+                                <img src="${produto.imagem 
+                                    ? `/static/img/produtos/${produto.imagem}` 
+                                    : defaultImage}" 
+                                    alt="${produto.nome}" 
+                                    class="produto-imagem">
+                                <div class="produto-info">
+                                    <h4>${produto.nome}</h4>
+                                    <a href="${produto.url}" target="_blank" class="produto-link">
+                                        Ver produto ➔
+                                    </a>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function gerarSecaoRedes(redes) {
+            return `
+                <div class="content-section">
+                    <h3 class="section-title">📱 Conteúdo Especial</h3>
+                    <div class="redes-grid">
+                        ${redes.map(rede => `
+                            <a href="${rede.url}" target="_blank" class="rede-card">
+                                <div class="rede-icon">${rede.icone || '🔗'}</div>
+                                <div class="rede-info">
+                                    <h4>${rede.titulo}</h4>
+                                    ${rede.tipo ? `<span class="rede-tipo">${rede.tipo}</span>` : ''}
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
         function closeModal() {
             document.getElementById('detail-modal').style.display = 'none';
         }
 
+        // Event listeners para fechar modal
         document.querySelector('.modal-close').addEventListener('click', closeModal);
         window.onclick = function(event) {
             if (event.target === document.getElementById('detail-modal')) {
@@ -332,17 +395,7 @@
             }
         }
 
-        function loadRelatedContent(interesses, container) {
-            container.innerHTML = `
-                <div class="content-card">
-                    <h4>🚧 Em desenvolvimento</h4>
-                    <p>A integração com as fontes de conteúdo está sendo implementada.</p>
-                    <p>Interesses detectados: ${interesses.join(', ')}</p>
-                </div>
-            `;
-        }
-
-        // Eventos de Consulta
+        // Busca
         document.getElementById('btn-buscar').addEventListener('click', () => 
             carregarCadastros(document.getElementById('busca-interesses').value)
         );
@@ -356,12 +409,6 @@
 
         // Inicialização
         carregarCadastros();
-
-        // WhatsApp
-        function toggleWhatsApp() {
-            const modal = document.getElementById('whatsappModal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
     </script>
 </body>
 </html>
