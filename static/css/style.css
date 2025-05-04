@@ -454,3 +454,31 @@ body.light-theme {
     position: relative;
 }
 
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--message-bg);
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.warning-icon {
+    width: 100px;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.foto-perfil {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-image: url('/static/img/Furia_Logo.jpg');
+    background-size: cover;
+    background-position: center;
+}

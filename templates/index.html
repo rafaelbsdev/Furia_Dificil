@@ -6,6 +6,7 @@
     <title>FURIA Chat</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    <meta id="default-image" content="{{ url_for('static', filename='img/Furia_Logo.jpg') }}">
 </head>
 <body class="dark-theme">
     <div class="theme-switcher">
@@ -101,18 +102,14 @@
     </div>
 
     <script>
-        // Controle de Tema Corrigido
+        // Controle de Tema
         document.addEventListener('DOMContentLoaded', () => {
-            // Carregar tema salvo
             const temaSalvo = localStorage.getItem('tema') || 'dark';
             document.body.className = `${temaSalvo}-theme`;
             document.getElementById('theme-toggle').textContent = temaSalvo === 'dark' ? '🌙' : '☀️';
 
-            // Configurar toggle
             document.getElementById('theme-toggle').addEventListener('click', () => {
-                const temaAtual = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-                const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
-                
+                const novoTema = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
                 document.body.className = `${novoTema}-theme`;
                 localStorage.setItem('tema', novoTema);
                 document.getElementById('theme-toggle').textContent = novoTema === 'dark' ? '🌙' : '☀️';
@@ -128,19 +125,19 @@
             document.getElementById(tabName).classList.add('active');
         }
 
-        // Formatação do CPF
+        // Formatação de Campos
         document.getElementById('cpf').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 11);
             value = value.replace(/(\d{3})(\d)/, '$1.$2')
-                        .replace(/(\d{3})(\d)/, '$1.$2')
-                        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            e.target.value = value.substring(0, 14);
+                         .replace(/(\d{3})(\d)/, '$1.$2')
+                         .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
         });
 
-        // Formatação do Telefone
         document.getElementById('telefone').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 11) value = value.substring(0, 11);
+            value = value.substring(0, 11);
             value = value.replace(/^(\d{2})(\d)/g, '($1) $2')
                          .replace(/(\d)(\d{4})$/, '$1 $2-');
             e.target.value = value;
@@ -151,7 +148,7 @@
             const preview = document.getElementById('foto-preview');
             preview.innerHTML = '';
             
-            if (this.files && this.files[0]) {
+            if (this.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = document.createElement('img');
@@ -162,11 +159,11 @@
             }
         });
 
-        // Submit do Formulário
+        // Cadastro
         document.getElementById('form-cadastro').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Validação de campos
+            // Validação
             const camposObrigatorios = ['nome', 'email', 'cpf', 'telefone'];
             let camposValidos = true;
 
@@ -183,103 +180,101 @@
             const interesses = Array.from(document.querySelectorAll('input[name="interesses"]:checked'))
                                   .map(checkbox => checkbox.value);
 
-            if (!camposValidos) {
-                alert('Preencha todos os campos obrigatórios!');
+            if (!camposValidos || interesses.length === 0) {
+                if (!camposValidos) alert('Preencha todos os campos obrigatórios!');
+                if (interesses.length === 0) alert('Selecione pelo menos um interesse!');
                 return;
             }
 
-            if (interesses.length === 0) {
-                alert('Selecione pelo menos um interesse!');
-                return;
-            }
-
-            // Criar objeto de cadastro
+            // Criar cadastro
             const cadastro = {
                 id: Date.now(),
                 nome: document.getElementById('nome').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 cpf: document.getElementById('cpf').value,
                 telefone: document.getElementById('telefone').value,
-                foto: document.getElementById('foto').files[0] ? URL.createObjectURL(document.getElementById('foto').files[0]) : '/static/img/Furia_Logo.jpg',
+                foto: document.getElementById('foto').files[0] ? 
+                    URL.createObjectURL(document.getElementById('foto').files[0]) : '',
                 interesses: interesses,
                 dataCadastro: new Date().toLocaleString()
             };
 
-            // Salvar no localStorage
+            // Salvar
             const cadastros = JSON.parse(localStorage.getItem('cadastros') || '[]');
             cadastros.push(cadastro);
             localStorage.setItem('cadastros', JSON.stringify(cadastros));
 
-            // Atualizar consulta e resetar formulário
+            // Resetar e atualizar
             this.reset();
             document.getElementById('foto-preview').innerHTML = '';
             carregarCadastros();
-            alert('Cadastro realizado com sucesso!\nID: ' + cadastro.id);
+            alert('Cadastro realizado!\nID: ' + cadastro.id);
         });
 
-        // Sistema de Consulta
+        // Consulta
         function carregarCadastros(termo = '') {
             const cadastros = JSON.parse(localStorage.getItem('cadastros') || '[]');
             const resultados = document.getElementById('resultados');
-            
-            resultados.innerHTML = cadastros
-                .filter(cadastro => 
-                    cadastro.nome.toLowerCase().includes(termo.toLowerCase()) ||
-                    cadastro.email.toLowerCase().includes(termo.toLowerCase()) ||
-                    cadastro.cpf.includes(termo)
-                )
-                .map(cadastro => `
-                    <div class="result-item" data-id="${cadastro.id}">
-                        <img src="${cadastro.foto || '/static/img/Furia_Logo.jpg'}"
-                            class="foto-perfil" 
-                            alt="Foto do perfil">
-                        <div class="detalhes-usuario">
-                            <h3>${cadastro.nome}</h3>
-                            <div class="info-group">
-                                <p class="cpf">🆔 CPF: ${cadastro.cpf}</p>
-                                <p class="email">📧 ${cadastro.email}</p>
-                            </div>
-                            <p class="interesses">🎮 Interesses: ${cadastro.interesses.join(', ')}</p>
+            const defaultImage = document.getElementById('default-image').content;
+
+            const filtrados = cadastros.filter(cadastro => {
+                const busca = termo.toLowerCase();
+                return (
+                    cadastro.nome.toLowerCase().includes(busca) ||
+                    cadastro.email.toLowerCase().includes(busca) ||
+                    cadastro.cpf.includes(busca) ||
+                    cadastro.telefone.includes(busca)
+                );
+            });
+
+            resultados.innerHTML = filtrados.map(cadastro => `
+                <div class="result-item" data-id="${cadastro.id}">
+                    <img src="${cadastro.foto || defaultImage}" 
+                         class="foto-perfil" 
+                         alt="Foto do perfil">
+                    <div class="detalhes-usuario">
+                        <h3>${cadastro.nome}</h3>
+                        <div class="info-group">
+                            <p class="cpf">🆔 CPF: ${cadastro.cpf}</p>
+                            <p class="email">📧 ${cadastro.email}</p>
                         </div>
-                        <button class="btn-excluir" title="Excluir cadastro">🗑️</button>
+                        <p class="interesses">🎮 Interesses: ${cadastro.interesses.join(', ')}</p>
                     </div>
-                `).join('') || '<div class="no-results">Nenhum cadastro encontrado</div>';
-            
-            // Adiciona eventos de exclusão
+                    <button class="btn-excluir" title="Excluir cadastro">🗑️</button>
+                </div>
+            `).join('') || '<div class="no-results">Nenhum cadastro encontrado</div>';
+
             document.querySelectorAll('.btn-excluir').forEach(btn => {
-                btn.addEventListener('click', excluirCadastro);
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.closest('.result-item').dataset.id);
+                    if (confirm('Excluir permanentemente?')) {
+                        const novosCadastros = cadastros.filter(c => c.id !== id);
+                        localStorage.setItem('cadastros', JSON.stringify(novosCadastros));
+                        carregarCadastros(termo);
+                    }
+                });
             });
         }
 
-        function excluirCadastro(event) {
-            const item = event.target.closest('.result-item');
-            const id = parseInt(item.dataset.id);
-            
-            if (confirm('Tem certeza que deseja excluir este cadastro permanentemente?')) {
-                const cadastros = JSON.parse(localStorage.getItem('cadastros') || '[]');
-                const novosCadastros = cadastros.filter(cadastro => cadastro.id !== id);
-                
-                localStorage.setItem('cadastros', JSON.stringify(novosCadastros));
-                carregarCadastros(document.getElementById('busca-interesses').value);
-                alert('Cadastro excluído com sucesso!');
-            }
-        }
-
         // Eventos de Consulta
-        document.querySelector('[data-tab="consulta"]').addEventListener('click', () => carregarCadastros());
-        document.getElementById('btn-buscar').addEventListener('click', () => {
-            carregarCadastros(document.getElementById('busca-interesses').value);
+        document.getElementById('btn-buscar').addEventListener('click', () => 
+            carregarCadastros(document.getElementById('busca-interesses').value)
+        );
+
+        document.getElementById('busca-interesses').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                carregarCadastros(e.target.value);
+            }
         });
 
-        // Controle do WhatsApp
+        // Inicialização
+        carregarCadastros();
+
+        // WhatsApp
         function toggleWhatsApp() {
             const modal = document.getElementById('whatsappModal');
             modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('whatsappModal');
-            if (event.target === modal) modal.style.display = 'none';
         }
     </script>
 </body>
