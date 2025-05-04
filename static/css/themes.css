@@ -4,6 +4,7 @@
     --border-color: #ccc;
     --button-bg: #007bff;
     --button-hover: #0056b3;
+    --message-bg: #ffffff;
 }
 
 .dark-theme {
@@ -12,6 +13,7 @@
     --border-color: #444;
     --button-bg: #555;
     --button-hover: #666;
+    --message-bg: #2d2d2d;
 }
 
 body {
@@ -24,4 +26,15 @@ body {
 
 .light-theme::before {
     background: rgba(255, 255, 255, 0.3);
+}
+
+.custom-form input,
+.custom-form textarea {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.results-container {
+    background-color: var(--message-bg);
+    color: var(--text-color);
 }

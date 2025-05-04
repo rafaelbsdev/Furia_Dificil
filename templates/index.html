@@ -11,40 +11,45 @@
     <div class="theme-switcher">
         <button id="theme-toggle">🌙</button>
     </div>
-    
+
+    <!-- Abas de Navegação -->
+    <nav class="main-tabs">
+        <button class="tab-button active" data-tab="cadastro">Cadastro</button>
+        <button class="tab-button" data-tab="consulta">Consulta</button>
+    </nav>
+
     <div class="chat-container">
-        <!-- Container originalmente vazio (sem message-box ou input-area) -->
+        <!-- Conteúdo da Aba de Cadastro -->
+        <div id="cadastro" class="tab-content active">
+            <h2>Cadastro de Pessoa</h2>
+            <form id="form-cadastro" class="custom-form">
+                <div class="form-group">
+                    <input type="text" id="nome" placeholder="Nome completo" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="E-mail">
+                </div>
+                <div class="form-group">
+                    <textarea id="interesses" placeholder="Interesses (separados por vírgula)"></textarea>
+                </div>
+                <button type="submit" class="form-button">Salvar</button>
+            </form>
+        </div>
+
+        <!-- Conteúdo da Aba de Consulta -->
+        <div id="consulta" class="tab-content">
+            <h2>Consulta por Interesses</h2>
+            <div class="search-container">
+                <input type="text" id="busca-interesses" placeholder="Digite um interesse...">
+                <button id="btn-buscar" class="form-button">Buscar</button>
+            </div>
+            <div id="resultados" class="results-container">
+                <!-- Resultados serão exibidos aqui via JavaScript -->
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script>
-        const themeToggle = document.getElementById('theme-toggle');
-
-        // Controle do Tema
-        function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.body.className = `${savedTheme}-theme`;
-            themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-        }
-
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.contains('dark-theme');
-            const newTheme = isDark ? 'light' : 'dark';
-            document.body.className = `${newTheme}-theme`;
-            localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-        });
-
-        // Widget WhatsApp (original)
-        function toggleWhatsApp() {
-            const modal = document.getElementById('whatsappModal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
-
-        document.addEventListener('DOMContentLoaded', initializeTheme);
-    </script>
-
-    <!-- Widget do WhatsApp (mantido conforme original) -->
+    <!-- Widget do WhatsApp (mantido original) -->
     <div class="whatsapp-widget">
         <button class="whatsapp-button" onclick="toggleWhatsApp()">💬</button>
         <div class="whatsapp-modal" id="whatsappModal">
@@ -60,5 +65,63 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        // Controle do Tema
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.className = `${savedTheme}-theme`;
+            themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-theme');
+            const newTheme = isDark ? 'light' : 'dark';
+            document.body.className = `${newTheme}-theme`;
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+        });
+
+        // Controle das Abas
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+                
+                // Remove classes ativas
+                document.querySelectorAll('.tab-button, .tab-content').forEach(element => {
+                    element.classList.remove('active');
+                });
+                
+                // Ativa aba selecionada
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Widget WhatsApp
+        function toggleWhatsApp() {
+            const modal = document.getElementById('whatsappModal');
+            if (modal.style.display === 'block') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'block';
+            }
+        }
+
+        // Fecha o modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('whatsappModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', initializeTheme);
+
+        
+    </script>
 </body>
 </html>
