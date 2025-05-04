@@ -369,3 +369,60 @@ body.light-theme {
     padding: 20px;
     color: var(--text-color);
 }
+
+.result-item {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: var(--message-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.foto-perfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.detalhes-usuario {
+    flex: 1;
+}
+
+.info-group {
+    display: flex;
+    gap: 15px;
+    margin: 8px 0;
+}
+
+.cpf, .email {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+
+.interesses {
+    margin: 5px 0 0 0;
+    font-size: 0.85em;
+    color: var(--text-color);
+    opacity: 0.9;
+}
+
+/* Campo de busca */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#busca-interesses {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
