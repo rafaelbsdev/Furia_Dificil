@@ -76,7 +76,7 @@
         <div id="consulta" class="tab-content">
             <h2>Consulta de Cadastros</h2>
             <div class="search-container">
-                <input type="text" id="busca-interesses" placeholder="Buscar por nome, email ou interesse...">
+                <input type="text" id="busca-interesses" placeholder="Buscar por nome, CPF ou email...">
                 <button id="btn-buscar" class="form-button">Buscar</button>
             </div>
             <div id="resultados" class="results-container"></div>
@@ -101,6 +101,24 @@
     </div>
 
     <script>
+        // Controle de Tema Corrigido
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar tema salvo
+            const temaSalvo = localStorage.getItem('tema') || 'dark';
+            document.body.className = `${temaSalvo}-theme`;
+            document.getElementById('theme-toggle').textContent = temaSalvo === 'dark' ? '🌙' : '☀️';
+
+            // Configurar toggle
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                const temaAtual = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
+                
+                document.body.className = `${novoTema}-theme`;
+                localStorage.setItem('tema', novoTema);
+                document.getElementById('theme-toggle').textContent = novoTema === 'dark' ? '🌙' : '☀️';
+            });
+        });
+
         // Controle de Abas
         function openTab(event, tabName) {
             document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
@@ -192,9 +210,10 @@
             cadastros.push(cadastro);
             localStorage.setItem('cadastros', JSON.stringify(cadastros));
 
-            // Reset e feedback
+            // Atualizar consulta e resetar formulário
             this.reset();
             document.getElementById('foto-preview').innerHTML = '';
+            carregarCadastros();
             alert('Cadastro realizado com sucesso!\nID: ' + cadastro.id);
         });
 
@@ -205,20 +224,22 @@
             
             resultados.innerHTML = cadastros
                 .filter(cadastro => 
-                    cadastro.interesses.some(i => i.toLowerCase().includes(termo.toLowerCase())) ||
                     cadastro.nome.toLowerCase().includes(termo.toLowerCase()) ||
-                    cadastro.email.toLowerCase().includes(termo.toLowerCase())
+                    cadastro.email.toLowerCase().includes(termo.toLowerCase()) ||
+                    cadastro.cpf.includes(termo)
                 )
                 .map(cadastro => `
                     <div class="result-item">
-                        ${cadastro.foto ? `<img src="${cadastro.foto}" class="foto-perfil">` : ''}
-                        <div class="detalhes">
+                        <img src="${cadastro.foto || 'https://via.placeholder.com/80x80/2d2d2d/fff?text=Sem+Foto'}" 
+                             class="foto-perfil" 
+                             alt="Foto do perfil">
+                        <div class="detalhes-usuario">
                             <h3>${cadastro.nome}</h3>
-                            <p>📧 ${cadastro.email}</p>
-                            <p>📞 ${cadastro.telefone}</p>
-                            <p>🆔 CPF: ${cadastro.cpf}</p>
-                            <p>🎮 Interesses: ${cadastro.interesses.join(', ')}</p>
-                            <small>📅 ${cadastro.dataCadastro}</small>
+                            <div class="info-group">
+                                <p class="cpf">🆔 CPF: ${cadastro.cpf}</p>
+                                <p class="email">📧 ${cadastro.email}</p>
+                            </div>
+                            <p class="interesses">🎮 Interesses: ${cadastro.interesses.join(', ')}</p>
                         </div>
                     </div>
                 `).join('') || '<div class="no-results">Nenhum cadastro encontrado</div>';
@@ -228,24 +249,6 @@
         document.querySelector('[data-tab="consulta"]').addEventListener('click', () => carregarCadastros());
         document.getElementById('btn-buscar').addEventListener('click', () => {
             carregarCadastros(document.getElementById('busca-interesses').value);
-        });
-
-        // Controle de Tema
-        function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.body.className = `${savedTheme}-theme`;
-            document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeTheme();
-            document.getElementById('theme-toggle').addEventListener('click', () => {
-                const isDark = document.body.classList.contains('dark-theme');
-                const newTheme = isDark ? 'light' : 'dark';
-                document.body.className = `${newTheme}-theme`;
-                localStorage.setItem('theme', newTheme);
-                document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
-            });
         });
 
         // Controle do WhatsApp

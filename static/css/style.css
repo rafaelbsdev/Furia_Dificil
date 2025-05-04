@@ -217,6 +217,10 @@ body.light-theme {
     order: 2; /* Move para a extremidade direita */
 }
 
+.close-button:hover {
+    color: var(--button-hover);
+}
+
 /* Ajuste da Aba Consulta */
 #consulta .results-container {
     background-color: var(--message-bg);
