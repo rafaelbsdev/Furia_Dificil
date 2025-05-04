@@ -227,3 +227,85 @@ body.light-theme {
     background-color: var(--input-bg);
     color: var(--text-color);
 }
+
+/* Estilo para CPF formatado */
+#cpf {
+    text-transform: lowercase;
+}
+
+/* Estilo para upload de arquivo */
+.file-label {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed var(--border-color);
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-label:hover {
+    background-color: var(--input-bg);
+    border-style: solid;
+}
+
+/* Estilização dos checkboxes */
+.interests-group {
+    margin: 15px 0;
+}
+
+.checkbox-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    background-color: var(--input-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+.checkbox-label input:checked ~ .checkmark {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+}
+
+.checkmark:after {
+    content: "✓";
+    position: absolute;
+    display: none;
+    color: white;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.checkbox-label input:checked ~ .checkmark:after {
+    display: block;
+}
+
+#telefone {
+    text-transform: lowercase;
+}
