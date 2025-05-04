@@ -200,7 +200,7 @@
                 email: document.getElementById('email').value.trim(),
                 cpf: document.getElementById('cpf').value,
                 telefone: document.getElementById('telefone').value,
-                foto: document.getElementById('foto').files[0] ? URL.createObjectURL(document.getElementById('foto').files[0]) : '',
+                foto: document.getElementById('foto').files[0] ? URL.createObjectURL(document.getElementById('foto').files[0]) : '/static/img/Furia_Logo.jpg',
                 interesses: interesses,
                 dataCadastro: new Date().toLocaleString()
             };
@@ -229,10 +229,10 @@
                     cadastro.cpf.includes(termo)
                 )
                 .map(cadastro => `
-                    <div class="result-item">
-                        <img src="${cadastro.foto || 'https://via.placeholder.com/80x80/2d2d2d/fff?text=Sem+Foto'}" 
-                             class="foto-perfil" 
-                             alt="Foto do perfil">
+                    <div class="result-item" data-id="${cadastro.id}">
+                        <img src="${cadastro.foto || '/static/img/Furia_Logo.jpg'}"
+                            class="foto-perfil" 
+                            alt="Foto do perfil">
                         <div class="detalhes-usuario">
                             <h3>${cadastro.nome}</h3>
                             <div class="info-group">
@@ -241,8 +241,28 @@
                             </div>
                             <p class="interesses">🎮 Interesses: ${cadastro.interesses.join(', ')}</p>
                         </div>
+                        <button class="btn-excluir" title="Excluir cadastro">🗑️</button>
                     </div>
                 `).join('') || '<div class="no-results">Nenhum cadastro encontrado</div>';
+            
+            // Adiciona eventos de exclusão
+            document.querySelectorAll('.btn-excluir').forEach(btn => {
+                btn.addEventListener('click', excluirCadastro);
+            });
+        }
+
+        function excluirCadastro(event) {
+            const item = event.target.closest('.result-item');
+            const id = parseInt(item.dataset.id);
+            
+            if (confirm('Tem certeza que deseja excluir este cadastro permanentemente?')) {
+                const cadastros = JSON.parse(localStorage.getItem('cadastros') || '[]');
+                const novosCadastros = cadastros.filter(cadastro => cadastro.id !== id);
+                
+                localStorage.setItem('cadastros', JSON.stringify(novosCadastros));
+                carregarCadastros(document.getElementById('busca-interesses').value);
+                alert('Cadastro excluído com sucesso!');
+            }
         }
 
         // Eventos de Consulta
