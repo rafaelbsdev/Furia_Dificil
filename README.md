@@ -16,7 +16,7 @@ Formatos de Imagem: WEBP (otimizado) + JPG/JPEG (fallback)
 Clone o repositório:
 
 bash
-git clone [https://github.com/seu-usuario/furia-cadastro.git](https://github.com/rafaelbsdev/Furia_Dificil)
+git clone [https://github.com/rafaelbsdev/Furia_Dificil.git](https://github.com/rafaelbsdev/Furia_Dificil)
 cd furia-cadastro
 Instale as dependências:
 
