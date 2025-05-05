@@ -6,7 +6,7 @@
     <title>FURIA - Know Your Fan</title>
     <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="static/css/themes.css">
-    <meta id="default-image" content="{{ url_for('static', filename='img/Furia_Logo.jpg') }}">
+    <meta id="default-image" content="static/img/Furia_Logo.jpg">
 </head>
 <body class="dark-theme">
     <div class="theme-switcher">
@@ -76,7 +76,7 @@
         <div id="consulta" class="tab-content">
             <h2>Consulta de Cadastros</h2>
             <div class="search-container">
-                <input type="text" id="busca-interesses" placeholder="Buscar por nome, CPF ou email...">
+                <input type="text" id="busca-interests" placeholder="Buscar por nome, CPF ou email...">
                 <button id="btn-buscar" class="form-button">Buscar</button>
             </div>
             <div id="resultados" class="results-container"></div>
@@ -109,7 +109,7 @@
             </div>
             <div class="modal-body">
                 <div class="perfil-info">
-                    <img id="modal-foto" class="foto-perfil-modal" src="/static/img/Furia_Logo.jpg" alt="Foto do perfil">
+                    <img id="modal-foto" class="foto-perfil-modal" src="static/img/Furia_Logo.jpg" alt="Foto do perfil">
                     <div class="detalhes-contato">
                         <p><span>📧 E-mail:</span> <span id="modal-email"></span></p>
                         <p><span>📱 Telefone:</span> <span id="modal-telefone"></span></p>
@@ -117,6 +117,23 @@
                     </div>
                 </div>
                 <div id="conteudo-relacionado" class="content-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget WhatsApp -->
+    <div class="whatsapp-widget">
+        <button class="whatsapp-button" onclick="toggleWhatsApp()">💬</button>
+        <div class="whatsapp-modal" id="whatsappModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Chat FURIA</h3>
+                    <button class="close-button" onclick="toggleWhatsApp()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Você será redirecionado para o WhatsApp. Deseja continuar?</p>
+                    <a href="https://wa.me/5511993404466" target="_blank" class="whatsapp-link">Abrir WhatsApp</a>
+                </div>
             </div>
         </div>
     </div>
@@ -298,7 +315,7 @@
                     if (confirm('Excluir permanentemente?')) {
                         const novosCadastros = cadastros.filter(c => c.id !== id);
                         localStorage.setItem('cadastros', JSON.stringify(novosCadastros));
-                        carregarCadastros(document.getElementById('busca-interesses').value);
+                        carregarCadastros(document.getElementById('busca-interests').value);
                     }
                 });
             });
@@ -334,7 +351,7 @@
             modal.style.display = 'block';
             
             try {
-                const response = await fetch('/static/data/content.json');
+                const response = await fetch('static/data/content.json');
                 const data = await response.json();
                 
                 let redesSociais = [...data.geral.redes_sociais];
@@ -355,58 +372,46 @@
 
                 // Gerar HTML
                 contentGrid.innerHTML = `
-                    ${gerarSecaoProdutos(produtos, dados.foto)}
-                    ${gerarSecaoRedes([...redesSociais, ...conteudoEspecifico])}
+                    <div class="content-section">
+                        <h3 class="section-title">🎁 Produtos Relacionados</h3>
+                        <div class="produtos-grid">
+                            ${produtos.map(produto => `
+                                <div class="produto-card">
+                                    <img src="${produto.imagem 
+                                        ? 'static/img/' + produto.imagem 
+                                        : document.getElementById('default-image').content}" 
+                                        alt="${produto.nome}" 
+                                        class="produto-imagem">
+                                    <div class="produto-info">
+                                        <h4>${produto.nome}</h4>
+                                        <a href="${produto.url}" target="_blank" class="produto-link">
+                                            Ver produto ➔
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <h3 class="section-title">📱 Conteúdo Especial</h3>
+                        <div class="redes-grid">
+                            ${[...redesSociais, ...conteudoEspecifico].map(rede => `
+                                <a href="${rede.url}" target="_blank" class="rede-card">
+                                    <div class="rede-icon">${rede.icone || '🔗'}</div>
+                                    <div class="rede-info">
+                                        <h4>${rede.titulo}</h4>
+                                        ${rede.tipo ? `<span class="rede-tipo">${rede.tipo}</span>` : ''}
+                                    </div>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
                 `;
 
             } catch (error) {
                 console.error('Erro:', error);
                 contentGrid.innerHTML = '<div class="error">Erro ao carregar conteúdo</div>';
             }
-        }
-
-        function gerarSecaoProdutos(produtos, defaultImage) {
-            return `
-                <div class="content-section">
-                    <h3 class="section-title">🎁 Produtos Relacionados</h3>
-                    <div class="produtos-grid">
-                        ${produtos.map(produto => `
-                            <div class="produto-card">
-                                <img src="${produto.imagem 
-                                    ? `/static/img/produtos/${produto.imagem}` 
-                                    : defaultImage}" 
-                                    alt="${produto.nome}" 
-                                    class="produto-imagem">
-                                <div class="produto-info">
-                                    <h4>${produto.nome}</h4>
-                                    <a href="${produto.url}" target="_blank" class="produto-link">
-                                        Ver produto ➔
-                                    </a>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function gerarSecaoRedes(redes) {
-            return `
-                <div class="content-section">
-                    <h3 class="section-title">📱 Conteúdo Especial</h3>
-                    <div class="redes-grid">
-                        ${redes.map(rede => `
-                            <a href="${rede.url}" target="_blank" class="rede-card">
-                                <div class="rede-icon">${rede.icone || '🔗'}</div>
-                                <div class="rede-info">
-                                    <h4>${rede.titulo}</h4>
-                                    ${rede.tipo ? `<span class="rede-tipo">${rede.tipo}</span>` : ''}
-                                </div>
-                            </a>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
         }
 
         function shuffleArray(array) {
@@ -427,19 +432,28 @@
             if (event.target === document.getElementById('detail-modal')) {
                 closeModal();
             }
+            if (event.target === document.getElementById('whatsappModal')) {
+                document.getElementById('whatsappModal').style.display = 'none';
+            }
         }
 
         // Busca
         document.getElementById('btn-buscar').addEventListener('click', () => 
-            carregarCadastros(document.getElementById('busca-interesses').value)
+            carregarCadastros(document.getElementById('busca-interests').value)
         );
 
-        document.getElementById('busca-interesses').addEventListener('keypress', (e) => {
+        document.getElementById('busca-interests').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 carregarCadastros(e.target.value);
             }
         });
+
+        // WhatsApp
+        function toggleWhatsApp() {
+            const modal = document.getElementById('whatsappModal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
 
         // Inicialização
         carregarCadastros();

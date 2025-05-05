@@ -4,92 +4,92 @@
       {
         "nome": "Moletom Furia x Batman 85 Long Live The Bat Preto",
         "url": "https://www.furia.gg/produto/moletom-furia-x-batman-85-long-live-the-bat-preto-150254",
-        "imagem": "Furia_Batman.webp"
+        "imagem": "produtos/Furia_Batman.webp"
       },
       {
         "nome": "Camiseta Furia Oficial '24 Preta",
         "url": "https://www.furia.gg/produto/camiseta-furia-oficial-24-preta-150177",
-        "imagem": "Camisa_Official_Preta.webp"
+        "imagem": "produtos/Camisa_Official_Preta.webp"
       },
       {
         "nome": "Camiseta Furia Future is Black Sankofa Amarela",
         "url": "https://www.furia.gg/produto/camiseta-furia-future-is-black-sankofa-amarela-150147",
-        "imagem": "Camisa_Amarela.webp"
+        "imagem": "produtos/Camisa_Amarela.webp"
       },
       {
         "nome": "Moletom Oversized Furia Future is Black Sankofa Preto",
         "url": "https://www.furia.gg/produto/moletom-oversized-furia-future-is-black-sankofa-preto-150152",
-        "imagem": "Moletom_Preto.webp"
+        "imagem": "produtos/Moletom_Preto.webp"
       },
       {
         "nome": "Calça Furia Future Is Black Preta",
         "url": "https://www.furia.gg/produto/calca-furia-future-is-black-preta-150143",
-        "imagem": "Calca_Preta.webp"
+        "imagem": "produtos/Calca_Preta.webp"
       },
       {
         "nome": "Camiseta Furia | Adidas Preta",
         "url": "https://www.furia.gg/produto/camiseta-furia-adidas-preta-150263",
-        "imagem": "Camisa_Furia_Adidas.webp"
+        "imagem": "produtos/Camisa_Furia_Adidas.webp"
       },
       {
         "nome": "Camiseta Furia x Champion Lockup Off White",
         "url": "https://www.furia.gg/produto/camiseta-furia-x-champion-lockup-off-white-150167",
-        "imagem": "Camisa_Off_white.webp"
+        "imagem": "produtos/Camisa_Off_white.webp"
       },
       {
         "nome": "Camiseta Furia x Champion Mascot Off White",
         "url": "https://www.furia.gg/produto/camiseta-furia-x-champion-mascot-off-white-150171",
-        "imagem": "Camisa_Champion_mascot.webp"
+        "imagem": "produtos/Camisa_Champion_mascot.webp"
       },
       {
         "nome": "Moletom Furia x Champion College Preto",
         "url": "https://www.furia.gg/produto/moletom-furia-x-champion-college-preto-150174",
-        "imagem": "Moletom_Champion.webp"
+        "imagem": "produtos/Moletom_Champion.webp"
       },
       {
         "nome": "Camiseta Furia x Champion Mascot Hoodie Off White",
         "url": "https://www.furia.gg/produto/camiseta-furia-x-champion-mascot-hoodie-off-white-150169",
-        "imagem": "Camisa_Mascote_Off_white.webp"
+        "imagem": "produtos/Camisa_Mascote_Off_white.webp"
       },
       {
         "nome": "Camiseta Furia Clutch Branca",
         "url": "https://www.furia.gg/produto/camiseta-furia-clutch-branca-150194",
-        "imagem": "Camisa_Clutch_Branca.webp"
+        "imagem": "produtos/Camisa_Clutch_Branca.webp"
       },
       {
         "nome": "Camiseta Oversized Furia x Zor Woodhorse Marrom",
         "url": "https://www.furia.gg/produto/camiseta-oversized-furia-x-zor-woodhorse-marrom-150243",
-        "imagem": "Camisa_Zor_Woodhorse.webp"
+        "imagem": "produtos/Camisa_Zor_Woodhorse.webp"
       },
       {
         "nome": "Moletom Polo Furia x Zor Preto",
         "url": "https://www.furia.gg/produto/moletom-polo-furia-x-zor-preto-150248",
-        "imagem": "Moletom_Polo.webp"
+        "imagem": "produtos/Moletom_Polo.webp"
       },
       {
         "nome": "Camiseta My Hero Academia x Furia Izuku Midorya Branca",
         "url": "https://www.furia.gg/produto/camiseta-my-hero-academia-x-furia-izuku-midorya-branca-150225",
-        "imagem": "Camisa_Midorya.webp"
+        "imagem": "produtos/Camisa_Midorya.webp"
       },
       {
         "nome": "Jaqueta My Hero Academia x Furia Izuku Midorya Verde",
         "url": "https://www.furia.gg/produto/jaqueta-my-hero-academia-x-furia-izuku-midorya-verde-150231",
-        "imagem": "Jaqueta_Midorya.webp"
+        "imagem": "produtos/Jaqueta_Midorya.webp"
       },
       {
         "nome": "Moletom My Hero Academia x Furia Bakugo Preto",
         "url": "https://www.furia.gg/produto/moletom-my-hero-academia-x-furia-bakugo-preto-150232",
-        "imagem": "Moletom_Bakugo.webp"
+        "imagem": "produtos/Moletom_Bakugo.webp"
       },
       {
         "nome": "Calça Furia x Zor Preta",
         "url": "https://www.furia.gg/produto/calca-furia-x-zor-preta-150236",
-        "imagem": "Calca_Zor_Preta.webp"
+        "imagem": "produtos/Calca_Zor_Preta.webp"
       },
       {
         "nome": "Calça My Hero Academia x Furia Preta",
         "url": "https://www.furia.gg/produto/calca-my-hero-academia-x-furia-preta-150222",
-        "imagem": "Calca_My_Hero.webp"
+        "imagem": "produtos/Calca_My_Hero.webp"
       }
     ],
     "redes_sociais": [
