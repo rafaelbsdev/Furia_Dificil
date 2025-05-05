@@ -418,6 +418,7 @@ body.light-theme {
 
 /* Campo de busca */
 .search-container {
+    display: flex;
     gap: 10px;
     margin-bottom: 20px;    
 }
