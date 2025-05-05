@@ -76,7 +76,7 @@
         <div id="consulta" class="tab-content">
             <h2>Consulta de Cadastros</h2>
             <div class="search-container">
-                <input type="text" id="busca-interests" placeholder="Buscar por nome, CPF ou email...">
+                <input type="text" id="busca-interesse" placeholder="Buscar por nome, CPF ou email...">
                 <button id="btn-buscar" class="form-button">Buscar</button>
             </div>
             <div id="resultados" class="results-container"></div>
@@ -315,7 +315,7 @@
                     if (confirm('Excluir permanentemente?')) {
                         const novosCadastros = cadastros.filter(c => c.id !== id);
                         localStorage.setItem('cadastros', JSON.stringify(novosCadastros));
-                        carregarCadastros(document.getElementById('busca-interests').value);
+                        carregarCadastros(document.getElementById('busca-interesse').value);
                     }
                 });
             });
@@ -439,10 +439,10 @@
 
         // Busca
         document.getElementById('btn-buscar').addEventListener('click', () => 
-            carregarCadastros(document.getElementById('busca-interests').value)
+            carregarCadastros(document.getElementById('busca-interesse').value)
         );
 
-        document.getElementById('busca-interests').addEventListener('keypress', (e) => {
+        document.getElementById('busca-interesse').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 carregarCadastros(e.target.value);
