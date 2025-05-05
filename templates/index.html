@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FURIA Cadastro</title>
+    <title>FURIA - Know Your Fan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
     <meta id="default-image" content="{{ url_for('static', filename='img/Furia_Logo.jpg') }}">
@@ -21,7 +21,7 @@
 
         <!-- Aba de Cadastro -->
         <div id="cadastro" class="tab-content active">
-            <h2>Cadastro de Pessoa</h2>
+            <h2>Know Your Fan - Cadastro</h2>
             <form id="form-cadastro" class="custom-form">
                 <div class="form-group">
                     <input type="text" id="nome" placeholder="Nome completo" required>
@@ -83,6 +83,22 @@
         </div>
     </div>
 
+    <div class="whatsapp-widget">
+        <button class="whatsapp-button" onclick="toggleWhatsApp()">💬</button>
+        <div class="whatsapp-modal" id="whatsappModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Chat FURIA</h3>
+                    <button class="close-button" onclick="toggleWhatsApp()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Você será redirecionado para o WhatsApp. Deseja continuar?</p>
+                    <a href="https://wa.me/5511993404466" target="_blank" class="whatsapp-link">Abrir WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Detalhes -->
     <div id="detail-modal" class="modal">
         <div class="modal-content furia-modal">
@@ -119,6 +135,24 @@
                 document.getElementById('theme-toggle').textContent = novoTema === 'dark' ? '🌙' : '☀️';
             });
         });
+
+        // Controle do WhatsApp
+        function toggleWhatsApp() {
+            const modal = document.getElementById('whatsappModal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+            const whatsappModal = document.getElementById('whatsappModal');
+            const detailModal = document.getElementById('detail-modal');
+            
+            if (event.target === whatsappModal) {
+                whatsappModal.style.display = 'none';
+            }
+            if (event.target === detailModal) {
+                detailModal.style.display = 'none';
+            }
+        }
 
         // Controle de Abas
         function openTab(event, tabName) {
